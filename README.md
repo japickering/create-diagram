@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+This project was created by @mastir as a simple replacement for [projectstorm/react-diagrams](https://github.com/projectstorm/react-diagrams).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# What is it
 
-## Available Scripts
+React diagram is a collection of base components to create flow chart or process flow.
 
-In the project directory, you can run:
+[Live demo](https://codesandbox.io/p/sandbox/react-diagram-sv4743)
 
-### `npm start`
+# What is included
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React components to implement base logic: Diagram, Node, Port, NodeDragZone
+- callbacks to handle business logic: Port.canConnect, Port.onConnect, NodeDragZone.onMove
+- base state handlers for: scroll, zoom, drag view, move nodes, connect ports.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+# Setup
 
-### `npm test`
+`npm i --save @mastir/react-diagram`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# How to use
 
-### `npm run build`
+Start by importing <DiagramWrapper /> which includes my refactor of the code to import a functional component.
+It imports useMemo() from the React namespace, which is required to properly use this kind of React Hook.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```index.js
+import * as React from "react";
+import * as ReactDOM from "react-dom/client";
+import { StyledEngineProvider, CssVarsProvider } from "@mui/joy/styles";
+import { App } from "./App";
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+ReactDOM.createRoot(document.querySelector("#root")).render(
+  <React.StrictMode>
+    <StyledEngineProvider injectFirst>
+      <CssVarsProvider>
+        <App />
+      </CssVarsProvider>
+    </StyledEngineProvider>
+  </React.StrictMode>
+);
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```App.js
+// export App component contts using the memo app wrapper contents of App.js
 
-### `npm run eject`
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Components
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## User defined types
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+TNode, TPort, TLink - unique `string` or any `object` representing element ( you should avoid object recreation or duplication )
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Diagram
 
-## Learn More
+Root component
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| prop         | type             | description                                                                                          |
+| ------------ | ---------------- | ---------------------------------------------------------------------------------------------------- |
+| engine\*     | EngineModel      | Main diagram container                                                                               |
+| links\*      | TLink[]          | List of all links to display                                                                         |
+| createLink   | (TPort)=>TLink   | TLink factory                                                                                        |
+| getLinkStyle | (TLink) => style | default {color:'#FFF', width: 2, curviness: 50}                                                      |
+| linksLayer   | React.Element    | You can pass LinksLayer state handler wrap component (to avoid whole diagram redraw on link updates) |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Node
 
-### Code Splitting
+Container for any element placed in Diagram
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| prop       | type            | description                                                    |
+| ---------- | --------------- | -------------------------------------------------------------- |
+| model\*    | TNode           | any object represented by this element                         |
+| position\* | [number,number] | node position x axis                                           |
+| key        | string          | required for all nodes, its recomended to use any generated id |
 
-### Analyzing the Bundle Size
+## Port
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Container for connectors in Node
 
-### Making a Progressive Web App
+| prop       | type                    | description                                                                         |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------------- |
+| model\*    | TPort                   | any object represented by this element                                              |
+| linkOffset | [number,number]         | link connection point ([-1,1] = left bottom, [0,-1] = center,top), default = [0, 0] |
+| createLink | ()=>TLink               | new TLink factory, created from this port                                           |
+| canConnect | (TPort, TLink)=>boolean | default: ()=>true                                                                   |
+| onConnect  | (TPort, TLink)=>void    | callback for new link connection                                                    |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## NodeDragZone
 
-### Advanced Configuration
+| prop   | type        | description                |
+| ------ | ----------- | -------------------------- |
+| onMove | (x,y)=>void | callback for node move end |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## LinksLayer
 
-### Deployment
+react component to render links in svg
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## EngineModel
 
-### `npm run build` fails to minify
+This is core container of the diagram. Engine contains 3 services: canvas, state, links
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### CanvasModel
+
+Contain information about currently rendered elements and provide methods to work with coordinates and elements
+
+### StateMachineModel
+
+Event processing service, active state handler can trigger state transitions.
+All of the action logic ([zoom](src/State/ZoomHandler.js), [drag canvas](src/State/DragCanvasState.js), [move node](src/State/DragNodeState.js), [create link](src/State/CreateLinkState.js)) realised in state handlers and can be extended and customized.
+
+### LinkListModel
+
+Contain information about rendered TLink[] models and methods to redraw them
