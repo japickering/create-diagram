@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "description": "Forked from react-diagram sandbox",
-  "homepage": "https://github.com/mastir/react-diagram",
+  "homepage": "https://github.com/japickering/create-diagram",
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
