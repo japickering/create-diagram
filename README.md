@@ -18,8 +18,7 @@ React diagram is a collection of base components to create flow chart or process
 
 # How to use
 
-Start by importing <DiagramWrapper /> which includes my refactor of the code to import a functional component.
-It imports useMemo() from the React namespace, which is required to properly use this kind of React Hook.
+This react-diagram library packages the main app using a memo wrapper, instead of useMemo() which to memoizes the diagram engine.
 
 ```index.js
 import * as React from "react";
@@ -36,11 +35,6 @@ ReactDOM.createRoot(document.querySelector("#root")).render(
     </StyledEngineProvider>
   </React.StrictMode>
 );
-```
-
-```App.js
-// export App component contts using the memo app wrapper contents of App.js
-
 ```
 
 # Components
