@@ -18,7 +18,7 @@ React diagram is a collection of base components to create flow chart or process
 
 # How to use
 
-This react-diagram library packages the main app using a memo wrapper, instead of useMemo() which to memoizes the diagram engine.
+This react-diagram library packages the main app using a CSS wrapper to inject CSS and a memo wrapper, instead of the native React useMemo() hook to memoize the diagram engine.
 
 ```index.js
 import * as React from "react";
